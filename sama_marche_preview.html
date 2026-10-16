@@ -1,0 +1,1552 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAMA MARCHÉ - Site & App de Vente et d'Achat au Sénégal</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    /* Custom scrollbars and styling */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #e2e8f0;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #cbd5e1;
+    }
+    .phone-container {
+      max-width: 420px;
+      margin: 0 auto;
+      border-radius: 40px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 10px #1e293b;
+      overflow: hidden;
+      background: #ffffff;
+      min-height: 820px;
+      display: flex;
+      flex-direction: column;
+    }
+    .desktop-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      overflow: hidden;
+      min-height: 850px;
+      display: flex;
+      flex-direction: column;
+    }
+    .badge-premium {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    }
+    .badge-wave {
+      background-color: #1da1f2;
+    }
+    .badge-om {
+      background-color: #ff6600;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen p-2 sm:p-4 md:p-6">
+
+  <!-- Top Controller Bar: Mode Switcher & Project Header -->
+  <div class="max-w-6xl mx-auto mb-4 flex flex-col sm:flex-row items-center justify-between gap-3 bg-white p-3 sm:p-4 rounded-2xl shadow-sm border border-slate-200">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-red-600 flex items-center justify-center text-white font-black text-xl shadow-md shadow-red-200">
+        SM
+      </div>
+      <div>
+        <h1 class="font-extrabold text-lg text-slate-900 flex items-center gap-2">
+          SAMA MARCHÉ 
+          <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-red-50 text-red-600 border border-red-200">Sénégal 🇸🇳</span>
+        </h1>
+        <p class="text-xs text-slate-500">Plateforme Achat & Vente • Wave • Orange Money • Abonnements Vendeurs</p>
+      </div>
+    </div>
+
+    <!-- Toggle Mobile / Web View -->
+    <div class="flex items-center gap-2 bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-semibold">
+      <button id="viewMobileBtn" onclick="setViewMode('mobile')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-600 text-white shadow-sm transition">
+        <span>📱 App Mobile (Android / iOS)</span>
+      </button>
+      <button id="viewWebBtn" onclick="setViewMode('web')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition">
+        <span>💻 Site Web (Desktop)</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- MAIN APP WRAPPER (Switches between phone-container and desktop-container) -->
+  <div id="appContainer" class="phone-container transition-all duration-300">
+
+    <!-- Top App Header -->
+    <header class="bg-red-600 text-white sticky top-0 z-30 shadow-md">
+      <!-- Status bar simulation for mobile -->
+      <div id="mobileStatusBar" class="flex justify-between items-center px-5 pt-2 text-[11px] font-medium tracking-tight text-red-100 opacity-90">
+        <span>15:30</span>
+        <div class="flex items-center gap-1.5">
+          <span>4G SENEGAL</span>
+          <span>📶</span>
+          <span>🔋 98%</span>
+        </div>
+      </div>
+
+      <div class="px-4 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-white text-red-600 font-black flex items-center justify-center text-base shadow">
+            SM
+          </div>
+          <div>
+            <div class="font-extrabold tracking-tight text-base leading-tight">SAMA MARCHÉ</div>
+            <div class="text-[10px] text-red-100">Dakar • Thiès • Partout au Sénégal</div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <!-- User status chip -->
+          <button onclick="openAuthModal()" id="userHeaderBtn" class="flex items-center gap-1.5 bg-red-700/60 hover:bg-red-700 border border-red-400/40 px-2.5 py-1 rounded-full text-xs font-medium text-white transition">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span id="userHeaderName">Moussa (Connecté)</span>
+          </button>
+          <button onclick="toggleSubscriptionModal()" class="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition" title="Mon Abonnement">
+            👑
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs (ACHATS & VENDRE highlighted as requested) -->
+      <div class="grid grid-cols-4 text-center border-t border-red-500/40 text-xs font-bold">
+        <button onclick="switchTab('achats')" id="tabBtnAchats" class="py-2.5 flex flex-col items-center gap-0.5 border-b-2 border-white text-white bg-red-700/40 transition">
+          <span class="text-base">🛍️</span>
+          <span>ACHATS</span>
+        </button>
+        <button onclick="switchTab('vendre')" id="tabBtnVendre" class="py-2.5 flex flex-col items-center gap-0.5 border-b-2 border-transparent text-red-100 hover:text-white transition">
+          <span class="text-base">🏷️</span>
+          <span>VENDRE</span>
+        </button>
+        <button onclick="switchTab('messages')" id="tabBtnMessages" class="py-2.5 flex flex-col items-center gap-0.5 border-b-2 border-transparent text-red-100 hover:text-white relative transition">
+          <span class="text-base">💬</span>
+          <span>MESSAGES</span>
+          <span id="unreadBadge" class="absolute top-1.5 right-4 w-4 h-4 bg-yellow-400 text-slate-900 font-extrabold text-[9px] rounded-full flex items-center justify-center">1</span>
+        </button>
+        <button onclick="switchTab('compte')" id="tabBtnCompte" class="py-2.5 flex flex-col items-center gap-0.5 border-b-2 border-transparent text-red-100 hover:text-white transition">
+          <span class="text-base">👤</span>
+          <span>COMPTE</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- CONTENT WRAPPER -->
+    <main class="flex-1 bg-slate-50 relative overflow-y-auto">
+
+      <!-- ========================================== -->
+      <!-- TAB 1: ONGLET ACHATS (Vue principale dès l'arrivée) -->
+      <!-- ========================================== -->
+      <section id="sectionAchats" class="p-3 sm:p-4 space-y-4">
+        
+        <!-- Search & Filter Bar -->
+        <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm space-y-2.5">
+          <div class="relative">
+            <span class="absolute left-3 top-2.5 text-slate-400">🔍</span>
+            <input type="text" id="searchInput" oninput="filterProducts()" placeholder="Rechercher (téléphone, voiture, bazin, meuble...)" class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-red-500">
+          </div>
+
+          <!-- Quick Filters: Neuf, Occasion, Localisation -->
+          <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
+            <button onclick="setFilter('all')" id="filterAll" class="filter-chip px-3 py-1.5 rounded-full bg-red-600 text-white font-medium whitespace-nowrap shadow-sm">
+              Tous les produits
+            </button>
+            <button onclick="setFilter('Neuf')" id="filterNeuf" class="filter-chip px-3 py-1.5 rounded-full bg-slate-100 text-slate-700 font-medium whitespace-nowrap hover:bg-slate-200">
+              ✨ Neuf uniquement
+            </button>
+            <button onclick="setFilter('Occasion')" id="filterOccasion" class="filter-chip px-3 py-1.5 rounded-full bg-slate-100 text-slate-700 font-medium whitespace-nowrap hover:bg-slate-200">
+              🔄 Occasion uniquement
+            </button>
+            <select id="cityFilter" onchange="filterProducts()" class="px-2 py-1.5 rounded-full bg-slate-100 text-slate-700 font-medium text-xs border-none focus:ring-1 focus:ring-red-500">
+              <option value="">📍 Tout le Sénégal</option>
+              <option value="Dakar">Dakar</option>
+              <option value="Thiès">Thiès</option>
+              <option value="Saint-Louis">Saint-Louis</option>
+              <option value="Mbour">Mbour</option>
+              <option value="Touba">Touba</option>
+              <option value="Ziguinchor">Ziguinchor</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Banner Publicité / Sponsorisé interne (liée aux abonnements vendeurs premium) -->
+        <div class="bg-gradient-to-r from-red-600 via-red-500 to-amber-500 rounded-2xl p-3 text-white shadow-md flex items-center justify-between">
+          <div>
+            <div class="flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-amber-200">
+              <span>⭐ Vendeur SAMA Premium</span>
+            </div>
+            <div class="text-sm font-extrabold">Boutique Dakar High-Tech</div>
+            <div class="text-xs text-red-100">Tous les téléphones neufs garantis 12 mois • Livraison rapide</div>
+          </div>
+          <button onclick="openProductModal(products[0])" class="bg-white text-red-600 hover:bg-red-50 text-xs font-bold px-3 py-2 rounded-xl shadow transition">
+            Voir l'offre
+          </button>
+        </div>
+
+        <!-- Info Header -->
+        <div class="flex items-center justify-between px-1">
+          <h2 class="font-extrabold text-sm text-slate-800 flex items-center gap-1.5">
+            <span>Produits disponibles</span>
+            <span id="productCountBadge" class="text-xs font-semibold px-2 py-0.5 bg-red-100 text-red-700 rounded-full">6 articles</span>
+          </h2>
+          <span class="text-[11px] text-slate-400">Photos, Prix, Stock & État vérifiés</span>
+        </div>
+
+        <!-- PRODUCT GRID (Items with required fields: Photo, Price, Stock, Condition, Location) -->
+        <div id="productsGrid" class="grid grid-cols-2 gap-3">
+          <!-- Filled dynamically via JavaScript -->
+        </div>
+
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TAB 2: ONGLET VENDRE (Dépôt d'annonce & Abonnement) -->
+      <!-- ========================================== -->
+      <section id="sectionVendre" class="p-3 sm:p-4 space-y-4 hidden">
+        
+        <!-- Status de l'abonnement vendeur -->
+        <div id="sellerSubStatusCard" class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl font-bold">
+                👑
+              </div>
+              <div>
+                <div class="text-xs text-slate-400 font-medium">Votre statut vendeur</div>
+                <div id="currentPlanLabel" class="text-sm font-bold text-slate-900">Abonnement Vendeur Non Actif</div>
+              </div>
+            </div>
+            <button onclick="toggleSubscriptionModal()" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-red-600 text-white hover:bg-red-700 shadow-sm transition">
+              Choisir un plan
+            </button>
+          </div>
+          <p class="text-xs text-slate-500 mt-2 border-t border-slate-100 pt-2">
+            ⚠️ Pour vendre sur <strong>SAMA MARCHÉ</strong>, un abonnement est obligatoire (1 500 FCFA/mois standard ou 3 000 FCFA/mois premium pour être en tête de liste).
+          </p>
+        </div>
+
+        <!-- Formulaire de Mise en Ligne du Produit -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <div class="border-b border-slate-100 pb-3">
+            <h3 class="font-bold text-base text-slate-900 flex items-center gap-2">
+              <span class="text-red-600">➕</span> Mettre un produit en ligne
+            </h3>
+            <p class="text-xs text-slate-500">Remplissez les informations obligatoires ci-dessous.</p>
+          </div>
+
+          <form id="sellProductForm" onsubmit="handleProductSubmission(event)" class="space-y-3.5 text-xs sm:text-sm">
+            
+            <!-- 1. Photo du produit (OBLIGATOIRE) -->
+            <div>
+              <label class="block font-bold text-slate-700 mb-1 flex items-center justify-between">
+                <span>📸 Photo du produit <span class="text-red-600 font-black">*</span></span>
+                <span class="text-[11px] font-normal text-red-500">Obligatoire</span>
+              </label>
+              <div class="border-2 border-dashed border-red-200 hover:border-red-500 rounded-2xl p-4 text-center bg-red-50/40 cursor-pointer transition relative" onclick="triggerPhotoPick()">
+                <div id="photoPreviewContainer" class="hidden">
+                  <img id="photoPreviewImg" src="" alt="Aperçu" class="h-32 mx-auto rounded-xl object-cover shadow-sm">
+                  <div class="text-[11px] text-red-600 font-bold mt-2">Cliquer pour changer de photo</div>
+                </div>
+                <div id="photoPlaceholder">
+                  <div class="text-3xl mb-1">📷</div>
+                  <div class="font-bold text-slate-700 text-xs">Ajouter une photo claire du produit</div>
+                  <div class="text-[11px] text-slate-400 mt-0.5">JPG, PNG ou appareil photo mobile</div>
+                </div>
+                <input type="file" id="productPhotoInput" accept="image/*" class="hidden" onchange="handlePhotoUpload(event)">
+              </div>
+              <!-- Presets rapides pour tester facilement -->
+              <div class="flex items-center gap-1.5 mt-2">
+                <span class="text-[10px] text-slate-400">Exemples rapides :</span>
+                <button type="button" onclick="selectSamplePhoto('iphone')" class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-[10px] font-medium text-slate-700">📱 iPhone</button>
+                <button type="button" onclick="selectSamplePhoto('scooter')" class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-[10px] font-medium text-slate-700">🛵 Moto</button>
+                <button type="button" onclick="selectSamplePhoto('bazin')" class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-[10px] font-medium text-slate-700">👗 Bazin</button>
+              </div>
+            </div>
+
+            <!-- 2. Titre et Catégorie -->
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">
+                Nom du produit <span class="text-red-600">*</span>
+              </label>
+              <input type="text" id="sellTitle" required placeholder="Ex: iPhone 14 Pro Max 128Go ou Salon complet" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500">
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <!-- 3. Prix en FCFA -->
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">
+                  Prix (FCFA) <span class="text-red-600">*</span>
+                </label>
+                <input type="number" id="sellPrice" required placeholder="Ex: 85000" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 font-bold text-red-600">
+              </div>
+
+              <!-- 4. Quantité / Stock disponible -->
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">
+                  Quantité / Stock <span class="text-red-600">*</span>
+                </label>
+                <input type="number" id="sellStock" required min="1" value="1" placeholder="Ex: 5" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500">
+              </div>
+            </div>
+
+            <!-- 5. État: Neuf ou Occasion (OBLIGATOIRE) -->
+            <div>
+              <label class="block font-bold text-slate-700 mb-1.5 flex items-center justify-between">
+                <span>État du produit <span class="text-red-600 font-black">*</span></span>
+                <span class="text-[11px] font-normal text-red-500">Obligatoire</span>
+              </label>
+              <div class="grid grid-cols-2 gap-3">
+                <label class="cursor-pointer border-2 border-slate-200 p-2.5 rounded-xl flex items-center gap-2.5 hover:border-red-500 transition has-[:checked]:border-red-600 has-[:checked]:bg-red-50/50">
+                  <input type="radio" name="sellCondition" value="Neuf" checked class="text-red-600 focus:ring-red-500">
+                  <div>
+                    <div class="font-bold text-xs text-slate-800">✨ Produit Neuf</div>
+                    <div class="text-[10px] text-slate-500">Jamais utilisé, sous emballage</div>
+                  </div>
+                </label>
+                <label class="cursor-pointer border-2 border-slate-200 p-2.5 rounded-xl flex items-center gap-2.5 hover:border-red-500 transition has-[:checked]:border-red-600 has-[:checked]:bg-red-50/50">
+                  <input type="radio" name="sellCondition" value="Occasion" class="text-red-600 focus:ring-red-500">
+                  <div>
+                    <div class="font-bold text-xs text-slate-800">🔄 Occasion</div>
+                    <div class="text-[10px] text-slate-500">Déjà utilisé / 2ème main</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- 6. Localisation au Sénégal (OBLIGATOIRE) -->
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">
+                  Ville <span class="text-red-600">*</span>
+                </label>
+                <select id="sellCity" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500">
+                  <option value="Dakar">Dakar</option>
+                  <option value="Thiès">Thiès</option>
+                  <option value="Saint-Louis">Saint-Louis</option>
+                  <option value="Mbour">Mbour</option>
+                  <option value="Touba">Touba</option>
+                  <option value="Ziguinchor">Ziguinchor</option>
+                  <option value="Kaolack">Kaolack</option>
+                </select>
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">
+                  Quartier / Précision <span class="text-red-600">*</span>
+                </label>
+                <input type="text" id="sellDistrict" required placeholder="Ex: Plateau, Almadies, Médina" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500">
+              </div>
+            </div>
+
+            <!-- 7. Justificatif d'identité CNI ou Passeport (OBLIGATOIRE) -->
+            <div class="bg-amber-50/80 border border-amber-200 p-3 rounded-2xl space-y-2">
+              <div class="flex items-center justify-between">
+                <label class="font-bold text-amber-900 text-xs flex items-center gap-1.5">
+                  <span>🆔 Carte d'Identité (CNI) ou Passeport</span>
+                  <span class="text-red-600 font-bold">*</span>
+                </label>
+                <span class="text-[10px] font-bold px-2 py-0.5 bg-amber-200 text-amber-900 rounded-md">Sécurité vendeurs</span>
+              </div>
+              <p class="text-[11px] text-amber-800">
+                Conformément aux règles de sécurité <strong>SAMA MARCHÉ</strong>, chaque vendeur doit fournir sa CNI ou Passeport pour garantir la confiance des acheteurs.
+              </p>
+              
+              <div class="flex items-center gap-3">
+                <select id="sellIdType" class="px-2.5 py-1.5 bg-white border border-amber-300 rounded-xl text-xs font-semibold">
+                  <option value="CNI">CNI Sénégalaise</option>
+                  <option value="Passeport">Passeport</option>
+                </select>
+                <div class="flex-1 border border-dashed border-amber-400 bg-white rounded-xl px-3 py-2 text-center cursor-pointer hover:bg-amber-100/50 transition" onclick="triggerIdPick()">
+                  <span id="idUploadLabel" class="text-xs font-medium text-amber-900">📄 Téléverser le scan ou photo</span>
+                  <input type="file" id="idDocInput" accept="image/*,.pdf" class="hidden" onchange="handleIdUpload(event)">
+                </div>
+              </div>
+              <div id="idBadgeSuccess" class="hidden text-[11px] text-emerald-700 font-bold flex items-center gap-1">
+                ✅ Pièce d'identité enregistrée avec succès (Vérification en cours)
+              </div>
+            </div>
+
+            <!-- 8. Description -->
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Description détaillée</label>
+              <textarea id="sellDescription" rows="2" placeholder="Précisez l'état, les accessoires fournis, garantie, etc." class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500"></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-extrabold rounded-xl shadow-md shadow-red-200 transition text-sm flex items-center justify-center gap-2">
+              <span>🚀 Publier mon annonce sur SAMA MARCHÉ</span>
+            </button>
+          </form>
+        </div>
+
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TAB 3: ONGLET MESSAGES / CHAT DIRECT -->
+      <!-- ========================================== -->
+      <section id="sectionMessages" class="p-3 sm:p-4 space-y-3 hidden h-full flex flex-col">
+        
+        <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+          <div>
+            <h2 class="font-extrabold text-slate-900 text-base">Discussions & Négociations</h2>
+            <p class="text-xs text-slate-500">Échangez en direct avec le vendeur avant le paiement</p>
+          </div>
+          <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">En direct</span>
+        </div>
+
+        <!-- Chat Container -->
+        <div class="flex-1 bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col h-[520px]">
+          
+          <!-- Conversation Header (Vendeur + Produit négocié) -->
+          <div class="p-3 border-b border-slate-100 bg-slate-50 rounded-t-2xl flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <div class="relative">
+                <img id="chatSellerAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop" class="w-9 h-9 rounded-full object-cover border border-slate-300">
+                <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full"></span>
+              </div>
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span id="chatSellerName" class="font-bold text-xs sm:text-sm text-slate-900">Boutique Dakar High-Tech</span>
+                  <span class="text-[10px] px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 font-bold">CNI Vérifiée</span>
+                </div>
+                <div id="chatProductReference" class="text-[11px] text-red-600 font-semibold truncate max-w-[200px]">
+                  iPhone 15 Pro Max 256GB • 750 000 FCFA
+                </div>
+              </div>
+            </div>
+
+            <!-- Direct Buy / Pay from Chat -->
+            <button onclick="openPaymentFromCurrentChat()" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow transition flex items-center gap-1">
+              <span>💳 Payer</span>
+            </button>
+          </div>
+
+          <!-- Product Mini Recap inside chat -->
+          <div class="bg-red-50/60 px-3 py-2 border-b border-red-100 flex items-center justify-between text-xs">
+            <span class="text-slate-600 font-medium">Article : <strong id="chatMiniTitle">iPhone 15 Pro Max</strong> (<span id="chatMiniPrice">750 000 FCFA</span>)</span>
+            <span class="text-red-700 font-bold bg-white px-2 py-0.5 rounded-full border border-red-200">Stock disponible : 2</span>
+          </div>
+
+          <!-- Chat Messages Body -->
+          <div id="chatMessagesBox" class="flex-1 p-3 overflow-y-auto space-y-2.5 text-xs">
+            
+            <!-- Message System -->
+            <div class="text-center my-1">
+              <span class="bg-slate-100 text-slate-500 text-[10px] px-2 py-0.5 rounded-full">
+                Discussion sécurisée SAMA MARCHÉ. Concluez puis payez via Wave ou Orange Money.
+              </span>
+            </div>
+
+            <!-- Message Client (Default auto message) -->
+            <div class="flex justify-end">
+              <div class="bg-red-600 text-white rounded-2xl rounded-tr-none px-3 py-2 max-w-[80%] shadow-sm">
+                <p id="chatFirstClientMsg">Bonjour ! Je suis intéressé par votre iPhone 15 Pro Max 256GB. Est-il toujours disponible à Dakar Plateau ?</p>
+                <div class="text-[9px] text-red-200 text-right mt-1">15:31 • Envoyé</div>
+              </div>
+            </div>
+
+            <!-- Message Vendeur -->
+            <div class="flex justify-start">
+              <div class="bg-slate-100 text-slate-800 rounded-2xl rounded-tl-none px-3 py-2 max-w-[80%] shadow-sm border border-slate-200">
+                <p>Bonjour cher client ! Oui absolument, il est 100% neuf, jamais activé, avec garantie 1 an. Vous souhaitez vous faire livrer ou passer en boutique ?</p>
+                <div class="text-[9px] text-slate-400 text-left mt-1">15:32 • Vendeur vérifié</div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Chat Input Bar -->
+          <form onsubmit="handleSendChatMessage(event)" class="p-2 border-t border-slate-100 bg-white rounded-b-2xl flex items-center gap-2">
+            <input type="text" id="chatInputMessage" placeholder="Écrire votre message ou négocier le prix..." class="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-red-500">
+            <button type="submit" class="px-3.5 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-xs transition">
+              Envoyer
+            </button>
+          </form>
+
+        </div>
+
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TAB 4: ONGLET COMPTE & ABONNEMENTS -->
+      <!-- ========================================== -->
+      <section id="sectionCompte" class="p-3 sm:p-4 space-y-4 hidden">
+        
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3">
+          <div class="w-14 h-14 rounded-full bg-red-100 border-2 border-red-500 text-red-600 font-extrabold flex items-center justify-center text-xl">
+            MD
+          </div>
+          <div class="flex-1">
+            <div class="font-extrabold text-base text-slate-900">Moussa Diop</div>
+            <div class="text-xs text-slate-500">+221 77 123 45 67 • Dakar, Sénégal</div>
+            <div class="flex items-center gap-2 mt-1">
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">Compte Acheteur & Vendeur</span>
+              <span id="accountBadgeSub" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">Abonnement Gratuit</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section Grille des Tarifs & Abonnements Vendeurs -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+          <div class="border-b border-slate-100 pb-2">
+            <h3 class="font-bold text-sm text-slate-900 flex items-center gap-1.5">
+              <span>💳 Formules d'Abonnement Vendeur SAMA MARCHÉ</span>
+            </h3>
+            <p class="text-xs text-slate-500">Obligatoire pour mettre des produits en ligne et vendre.</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            
+            <!-- Plan 1: Standard (1500 / 15000) -->
+            <div class="border-2 border-slate-200 hover:border-red-500 rounded-2xl p-3.5 space-y-2 relative transition">
+              <div class="flex justify-between items-start">
+                <div>
+                  <div class="font-bold text-sm text-slate-900">Pack Vendeur Standard</div>
+                  <div class="text-[11px] text-slate-500">Pour vendre occasionnellement</div>
+                </div>
+                <span class="text-xs font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded-full">Basique</span>
+              </div>
+              <div class="space-y-0.5">
+                <div class="text-lg font-black text-slate-900">1 500 FCFA <span class="text-xs font-normal text-slate-500">/ mois</span></div>
+                <div class="text-xs font-semibold text-emerald-600">ou 15 000 FCFA / an <span class="text-[10px] bg-emerald-50 px-1.5 py-0.2 rounded">(Économisez 3 000)</span></div>
+              </div>
+              <ul class="text-[11px] text-slate-600 space-y-1 pt-1">
+                <li>✅ Mise en ligne illimitée d'articles</li>
+                <li>✅ Photo obligatoire + CNI vérifiée</li>
+                <li>✅ Chat direct avec les acheteurs</li>
+                <li>❌ Pas de mise en avant 1er plan</li>
+              </ul>
+              <button onclick="subscribePlan('Standard', 1500)" class="w-full py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl text-xs transition">
+                Choisir Standard (1 500 FCFA)
+              </button>
+            </div>
+
+            <!-- Plan 2: Premium (3000 / 30000) -->
+            <div class="border-2 border-amber-400 bg-amber-50/20 rounded-2xl p-3.5 space-y-2 relative shadow-sm">
+              <div class="absolute -top-2.5 right-3 bg-gradient-to-r from-amber-500 to-red-500 text-white font-extrabold text-[10px] px-2 py-0.5 rounded-full shadow">
+                ⭐ 1ER PLAN & PUBS
+              </div>
+              <div class="flex justify-between items-start">
+                <div>
+                  <div class="font-bold text-sm text-amber-900">Pack Vendeur Premium</div>
+                  <div class="text-[11px] text-slate-500">Pour maximiser les ventes</div>
+                </div>
+              </div>
+              <div class="space-y-0.5">
+                <div class="text-lg font-black text-amber-700">3 000 FCFA <span class="text-xs font-normal text-slate-500">/ mois</span></div>
+                <div class="text-xs font-semibold text-emerald-600">ou 30 000 FCFA / an <span class="text-[10px] bg-emerald-50 px-1.5 py-0.2 rounded">(Économisez 6 000)</span></div>
+              </div>
+              <ul class="text-[11px] text-slate-700 space-y-1 pt-1">
+                <li>⭐ <strong>Produits en premier plan</strong> dans l'onglet Achats</li>
+                <li>📢 <strong>Bannières publicitaires</strong> de temps en temps dans l'app</li>
+                <li>✅ Badge Vendeur Vérifié & Recommandé</li>
+                <li>✅ Chat direct prioritaire & statistiques</li>
+              </ul>
+              <button onclick="subscribePlan('Premium', 3000)" class="w-full py-2 bg-gradient-to-r from-red-600 to-amber-500 hover:from-red-700 hover:to-amber-600 text-white font-bold rounded-xl text-xs shadow transition">
+                Prendre Premium (3 000 FCFA)
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Moyens de paiement acceptés -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm text-center space-y-2">
+          <div class="text-xs font-bold text-slate-600">Moyens de paiement au Sénégal acceptés :</div>
+          <div class="flex items-center justify-center gap-3">
+            <span class="px-3 py-1.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-600 font-black text-xs flex items-center gap-1">
+              🌊 Wave Sénégal
+            </span>
+            <span class="px-3 py-1.5 rounded-xl bg-orange-50 border border-orange-200 text-orange-600 font-black text-xs flex items-center gap-1">
+              🟠 Orange Money
+            </span>
+            <span class="px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1">
+              💳 Carte Bancaire
+            </span>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- Bottom Navigation Bar (Mobile Native Look) -->
+    <nav class="bg-white border-t border-slate-200 px-3 py-2 flex items-center justify-around text-xs font-semibold text-slate-500">
+      <button onclick="switchTab('achats')" id="navIconAchats" class="flex flex-col items-center text-red-600">
+        <span class="text-lg">🛍️</span>
+        <span class="text-[10px]">Achats</span>
+      </button>
+      <button onclick="switchTab('vendre')" id="navIconVendre" class="flex flex-col items-center hover:text-red-600">
+        <span class="text-lg">🏷️</span>
+        <span class="text-[10px]">Vendre</span>
+      </button>
+      <button onclick="switchTab('messages')" id="navIconMessages" class="flex flex-col items-center hover:text-red-600 relative">
+        <span class="text-lg">💬</span>
+        <span class="text-[10px]">Chat</span>
+        <span class="absolute -top-1 right-1 w-2 h-2 rounded-full bg-red-600"></span>
+      </button>
+      <button onclick="switchTab('compte')" id="navIconCompte" class="flex flex-col items-center hover:text-red-600">
+        <span class="text-lg">👤</span>
+        <span class="text-[10px]">Profil</span>
+      </button>
+    </nav>
+
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: DÉTAIL DU PRODUIT -->
+  <!-- ========================================== -->
+  <div id="productDetailModal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-3 hidden backdrop-blur-xs">
+    <div class="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-100 flex flex-col">
+      
+      <!-- Modal Header Image -->
+      <div class="relative bg-slate-900 h-64 flex items-center justify-center overflow-hidden">
+        <img id="modalProductImg" src="" alt="Photo" class="w-full h-full object-cover">
+        
+        <button onclick="closeProductModal()" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/50 text-white font-bold flex items-center justify-center hover:bg-black transition">
+          ✕
+        </button>
+
+        <!-- Condition & Stock Badges on Image -->
+        <div class="absolute bottom-3 left-3 flex items-center gap-2">
+          <span id="modalProductCondition" class="px-2.5 py-1 rounded-full text-xs font-black shadow-md bg-white text-slate-900">
+            NEUF
+          </span>
+          <span id="modalProductStock" class="px-2.5 py-1 rounded-full text-xs font-bold shadow-md bg-emerald-600 text-white">
+            Stock : 3 restants
+          </span>
+        </div>
+        <div id="modalPremiumTag" class="absolute top-3 left-3 px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500 text-white shadow">
+          ⭐ VENDEUR PREMIUM
+        </div>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-4 sm:p-5 space-y-4 flex-1">
+        
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <h3 id="modalProductTitle" class="text-lg sm:text-xl font-extrabold text-slate-900">Nom du produit</h3>
+            <div class="flex items-center gap-1.5 text-xs text-slate-500 mt-1">
+              <span>📍</span>
+              <span id="modalProductLocation" class="font-medium">Dakar, Plateau</span>
+              <span>•</span>
+              <span id="modalProductDate">Publié aujourd'hui</span>
+            </div>
+          </div>
+          <div class="text-right">
+            <div id="modalProductPrice" class="text-xl sm:text-2xl font-black text-red-600">85 000 FCFA</div>
+            <span class="text-[10px] text-slate-400">Prix négociable dans le chat</span>
+          </div>
+        </div>
+
+        <!-- Seller Profile Preview -->
+        <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <img id="modalSellerImg" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop" class="w-10 h-10 rounded-full object-cover border border-slate-300">
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span id="modalSellerName" class="font-bold text-xs sm:text-sm text-slate-900">Vendeur SAMA</span>
+                <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-1.5 rounded">CNI Vérifiée ✅</span>
+              </div>
+              <div class="text-[11px] text-slate-500">Membre certifié SAMA MARCHÉ • 4.9 ★ (48 avis)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div>
+          <h4 class="font-bold text-xs uppercase tracking-wider text-slate-400 mb-1">Description</h4>
+          <p id="modalProductDesc" class="text-xs sm:text-sm text-slate-700 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-100">
+            Description détaillée du produit.
+          </p>
+        </div>
+
+        <!-- Safety Warning -->
+        <div class="bg-blue-50 border border-blue-200 rounded-xl p-2.5 text-blue-900 text-[11px] flex items-center gap-2">
+          <span>🛡️</span>
+          <span><strong>Conseil de sécurité SAMA :</strong> Discutez avec le vendeur dans le chat intégré puis effectuez le paiement sécurisé par Wave ou Orange Money.</span>
+        </div>
+
+        <!-- Actions Buttons: Contacter (Chat) & Acheter -->
+        <div class="grid grid-cols-2 gap-3 pt-2">
+          <!-- Button Contacter: Opens Chat immediately -->
+          <button onclick="contactSellerFromModal()" class="py-3 px-3 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow transition">
+            <span>💬 Contacter le vendeur</span>
+          </button>
+
+          <!-- Button Payer / Acheter Direct -->
+          <button onclick="openPaymentFromModal()" class="py-3 px-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-extrabold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-md shadow-red-200 transition">
+            <span>💳 Acheter (Payer)</span>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: PAIEMENT (WAVE, ORANGE MONEY, CARTE) -->
+  <!-- ========================================== -->
+  <div id="paymentModal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-3 hidden backdrop-blur-xs">
+    <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-slate-100 overflow-hidden flex flex-col">
+      
+      <!-- Payment Header -->
+      <div class="bg-red-600 text-white p-4 flex items-center justify-between">
+        <div>
+          <div class="text-xs text-red-100 font-semibold">Paiement sécurisé au Sénégal</div>
+          <h3 class="font-black text-base">Règlement SAMA MARCHÉ</h3>
+        </div>
+        <button onclick="closePaymentModal()" class="text-white hover:text-red-200 font-bold text-lg">✕</button>
+      </div>
+
+      <div class="p-4 sm:p-5 space-y-4 text-xs sm:text-sm">
+        
+        <!-- Recap Box -->
+        <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-1.5">
+          <div class="flex justify-between text-slate-600 text-xs">
+            <span id="payItemTitle">Article sélectionné</span>
+            <span id="payItemPrice" class="font-bold text-slate-900">0 FCFA</span>
+          </div>
+          <div class="flex justify-between text-slate-600 text-xs">
+            <span>Frais de protection acheteur</span>
+            <span class="text-emerald-600 font-bold">Gratuit</span>
+          </div>
+          <div class="border-t border-slate-200 pt-1.5 flex justify-between font-black text-sm text-slate-900">
+            <span>Montant Total</span>
+            <span id="payTotalAmount" class="text-red-600 text-base">0 FCFA</span>
+          </div>
+        </div>
+
+        <!-- Payment Method Choice -->
+        <div>
+          <label class="block font-bold text-slate-700 mb-2">Choisissez votre mode de paiement :</label>
+          <div class="grid grid-cols-3 gap-2">
+            
+            <!-- Wave -->
+            <label class="cursor-pointer border-2 border-slate-200 p-2.5 rounded-xl flex flex-col items-center text-center gap-1 hover:border-blue-500 transition has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50/50">
+              <input type="radio" name="payMethod" value="Wave" checked class="text-blue-500 focus:ring-blue-400" onchange="updatePaymentFormUI()">
+              <div class="w-8 h-8 rounded-full bg-blue-500 text-white font-black flex items-center justify-center text-xs">🌊</div>
+              <span class="font-extrabold text-[11px] text-blue-700">Wave</span>
+            </label>
+
+            <!-- Orange Money -->
+            <label class="cursor-pointer border-2 border-slate-200 p-2.5 rounded-xl flex flex-col items-center text-center gap-1 hover:border-orange-500 transition has-[:checked]:border-orange-500 has-[:checked]:bg-orange-50/50">
+              <input type="radio" name="payMethod" value="OrangeMoney" class="text-orange-500 focus:ring-orange-400" onchange="updatePaymentFormUI()">
+              <div class="w-8 h-8 rounded-full bg-orange-500 text-white font-black flex items-center justify-center text-xs">🟠</div>
+              <span class="font-extrabold text-[11px] text-orange-700">Orange Money</span>
+            </label>
+
+            <!-- Carte Bancaire -->
+            <label class="cursor-pointer border-2 border-slate-200 p-2.5 rounded-xl flex flex-col items-center text-center gap-1 hover:border-red-500 transition has-[:checked]:border-red-500 has-[:checked]:bg-red-50/50">
+              <input type="radio" name="payMethod" value="Carte" class="text-red-600 focus:ring-red-400" onchange="updatePaymentFormUI()">
+              <div class="w-8 h-8 rounded-full bg-slate-800 text-white font-black flex items-center justify-center text-xs">💳</div>
+              <span class="font-extrabold text-[11px] text-slate-800">Carte Visa/MC</span>
+            </label>
+
+          </div>
+        </div>
+
+        <!-- Dynamic Inputs for Phone / Card -->
+        <div id="mobileMoneyInputs" class="space-y-2">
+          <label id="phoneInputLabel" class="block font-bold text-slate-700 text-xs">Numéro Wave (+221) :</label>
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-2 bg-slate-100 border border-slate-200 rounded-xl font-bold text-xs text-slate-700">🇸🇳 +221</span>
+            <input type="tel" id="payPhoneNumber" value="77 450 12 34" placeholder="77 xxx xx xx" class="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 font-semibold text-xs sm:text-sm">
+          </div>
+          <p id="paymentHint" class="text-[11px] text-slate-500">Vous recevrez une notification de confirmation instantanée sur votre application Wave.</p>
+        </div>
+
+        <div id="cardInputs" class="space-y-2 hidden">
+          <label class="block font-bold text-slate-700 text-xs">Coordonnées Carte Bancaire :</label>
+          <input type="text" placeholder="Numéro de carte (16 chiffres)" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs">
+          <div class="grid grid-cols-2 gap-2">
+            <input type="text" placeholder="MM/AA" class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs">
+            <input type="text" placeholder="CVC" class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs">
+          </div>
+        </div>
+
+        <!-- Validate Button -->
+        <button onclick="executePayment()" id="validatePaymentBtn" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-extrabold rounded-xl shadow-md shadow-red-200 transition text-sm flex items-center justify-center gap-2">
+          <span>Confirmer et Payer</span>
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: SOUSCRIPTION ABONNEMENT VENDEUR -->
+  <!-- ========================================== -->
+  <div id="subscriptionModal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-3 hidden backdrop-blur-xs">
+    <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[90vh]">
+      
+      <div class="bg-gradient-to-r from-red-600 to-amber-500 text-white p-4 flex items-center justify-between">
+        <div>
+          <div class="text-xs text-amber-200 font-bold uppercase tracking-wider">Abonnement Vendeur SAMA MARCHÉ</div>
+          <h3 class="font-extrabold text-base">Choisissez votre formule</h3>
+        </div>
+        <button onclick="toggleSubscriptionModal()" class="text-white hover:text-amber-200 font-bold text-lg">✕</button>
+      </div>
+
+      <div class="p-4 space-y-4 overflow-y-auto text-xs sm:text-sm">
+        
+        <!-- Standard -->
+        <div class="border-2 border-slate-200 rounded-2xl p-3.5 space-y-2 hover:border-red-500 transition">
+          <div class="flex justify-between items-center">
+            <span class="font-bold text-slate-900">Formule Standard</span>
+            <span class="text-xs bg-slate-100 px-2 py-0.5 rounded-full font-bold">1 500 F/mois</span>
+          </div>
+          <p class="text-xs text-slate-500">Pour publier et vendre vos articles en toute conformité.</p>
+          <div class="flex gap-2">
+            <button onclick="processSubscription('Standard', 1500, 'mensuel')" class="flex-1 py-1.5 bg-slate-800 text-white font-bold rounded-lg text-xs hover:bg-slate-900">
+              1 500 F / mois
+            </button>
+            <button onclick="processSubscription('Standard', 15000, 'annuel')" class="flex-1 py-1.5 bg-slate-100 text-slate-800 font-bold rounded-lg text-xs hover:bg-slate-200">
+              15 000 F / an
+            </button>
+          </div>
+        </div>
+
+        <!-- Premium -->
+        <div class="border-2 border-amber-400 bg-amber-50/30 rounded-2xl p-3.5 space-y-2 relative">
+          <span class="absolute -top-2.5 right-3 bg-amber-500 text-white font-black text-[10px] px-2 py-0.5 rounded-full">
+            ⭐ EN AVANT & PUBS
+          </span>
+          <div class="flex justify-between items-center">
+            <span class="font-bold text-amber-900">Formule Premium</span>
+            <span class="text-xs bg-amber-200 text-amber-900 px-2 py-0.5 rounded-full font-bold">3 000 F/mois</span>
+          </div>
+          <p class="text-xs text-slate-600">Vos produits apparaissent au <strong>premier plan</strong> lors des recherches + encarts publicitaires périodiques dans l'application.</p>
+          <div class="flex gap-2">
+            <button onclick="processSubscription('Premium', 3000, 'mensuel')" class="flex-1 py-1.5 bg-gradient-to-r from-red-600 to-amber-500 text-white font-bold rounded-lg text-xs shadow hover:from-red-700 hover:to-amber-600">
+              3 000 F / mois
+            </button>
+            <button onclick="processSubscription('Premium', 30000, 'annuel')" class="flex-1 py-1.5 bg-amber-100 text-amber-900 font-bold rounded-lg text-xs hover:bg-amber-200">
+              30 000 F / an
+            </button>
+          </div>
+        </div>
+
+        <div class="text-[11px] text-slate-400 text-center">
+          Paiement sécurisé par Wave, Orange Money ou Carte Bancaire.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: INSCRIPTION / CONNEXION -->
+  <!-- ========================================== -->
+  <div id="authModal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-3 hidden backdrop-blur-xs">
+    <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl p-5 border border-slate-100 space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <div>
+          <h3 class="font-extrabold text-base text-slate-900">Compte SAMA MARCHÉ</h3>
+          <p class="text-xs text-slate-500">Identifiez-vous pour acheter et vendre</p>
+        </div>
+        <button onclick="closeAuthModal()" class="text-slate-400 hover:text-slate-600 font-bold">✕</button>
+      </div>
+
+      <div class="space-y-3 text-xs sm:text-sm">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Nom complet</label>
+          <input type="text" id="authNameInput" value="Moussa Diop" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl">
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Numéro de téléphone sénégalais</label>
+          <input type="tel" id="authPhoneInput" value="+221 77 123 45 67" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl">
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Ville de résidence</label>
+          <select id="authCityInput" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl">
+            <option>Dakar</option>
+            <option>Thiès</option>
+            <option>Saint-Louis</option>
+            <option>Mbour</option>
+          </select>
+        </div>
+        <button onclick="saveAuthUser()" class="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white font-extrabold rounded-xl shadow transition">
+          Enregistrer et continuer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toastNotification" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-4 py-2.5 rounded-2xl text-xs font-bold shadow-xl border border-slate-700 z-50 hidden transition-all flex items-center gap-2">
+    <span id="toastIcon">✅</span>
+    <span id="toastMessage">Action réussie !</span>
+  </div>
+
+  <!-- JAVASCRIPT APPLICATION LOGIC -->
+  <script>
+    // State of the application
+    let currentViewMode = 'mobile';
+    let currentTab = 'achats';
+    let currentFilter = 'all';
+    let userSubscription = null; // null | 'Standard' | 'Premium'
+    let userSubscriptionDuration = null;
+    let selectedProductForAction = null;
+
+    // Sample initial products with all requested mandatory fields:
+    // Photo, Price (FCFA), Stock/Quantity, Location in Senegal, Condition (Neuf vs Occasion), Premium flag
+    let products = [
+      {
+        id: 1,
+        title: "iPhone 15 Pro Max 256GB Titanium",
+        price: 750000,
+        stock: 2,
+        condition: "Neuf",
+        city: "Dakar",
+        district: "Plateau",
+        photo: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600&h=600&fit=crop",
+        sellerName: "Boutique Dakar High-Tech",
+        sellerAvatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop",
+        sellerVerified: true,
+        sellerPlan: "Premium", // Premium seller -> 1st position in search
+        description: "iPhone 15 Pro Max neuf dans sa boîte scellée d'origine. Jamais activé, garantie Apple 1 an. Facture fournie et possibilité de test en magasin."
+      },
+      {
+        id: 2,
+        title: "Ensemble Bazin Riche Brodé 3 Pièces",
+        price: 65000,
+        stock: 5,
+        condition: "Neuf",
+        city: "Dakar",
+        district: "HLM 5",
+        photo: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&h=600&fit=crop",
+        sellerName: "Aïcha Couture Sénégal",
+        sellerAvatar: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=100&h=100&fit=crop",
+        sellerVerified: true,
+        sellerPlan: "Premium", // Premium seller -> 1st position
+        description: "Superbe bazin riche Getzner broderie haut de gamme fait main. Idéal pour Tabaski, Korité, mariages et grandes cérémonies. Disponible en plusieurs coloris."
+      },
+      {
+        id: 3,
+        title: "PlayStation 5 Édition Standard + 2 Manettes",
+        price: 360000,
+        stock: 1,
+        condition: "Occasion",
+        city: "Thiès",
+        district: "Cité Lamy",
+        photo: "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=600&h=600&fit=crop",
+        sellerName: "Abdoulaye Ndiaye",
+        sellerAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
+        sellerVerified: true,
+        sellerPlan: "Standard",
+        description: "Console PS5 en excellent état (très peu servi), livrée avec 2 manettes DualSense sans fil et câblage complet. Vente pour cause de voyage."
+      },
+      {
+        id: 4,
+        title: "Moto Scooter Yamaha T-MAX 530cc",
+        price: 1850000,
+        stock: 1,
+        condition: "Occasion",
+        city: "Dakar",
+        district: "Almadies",
+        photo: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=600&h=600&fit=crop",
+        sellerName: "Babacar Sylla",
+        sellerAvatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
+        sellerVerified: true,
+        sellerPlan: "Standard",
+        description: "Yamaha TMAX 530 très bien entretenu, vidange récente, papiers et carte grise en règle. Aucun frais à prévoir, essai possible sur place."
+      },
+      {
+        id: 5,
+        title: "Smart TV Samsung 55 pouces 4K UHD",
+        price: 240000,
+        stock: 4,
+        condition: "Neuf",
+        city: "Dakar",
+        district: "Castors",
+        photo: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=600&h=600&fit=crop",
+        sellerName: "Électro Keur Massar",
+        sellerAvatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop",
+        sellerVerified: true,
+        sellerPlan: "Standard",
+        description: "Téléviseur intelligent Samsung 55 pouces avec télécommande vocale, applications Netflix, YouTube, Canal+ intégrées. Garantie 1 an."
+      },
+      {
+        id: 6,
+        title: "Ordinateur Dell XPS 15 Core i7 32Go RAM",
+        price: 520000,
+        stock: 2,
+        condition: "Occasion",
+        city: "Saint-Louis",
+        district: "Sor",
+        photo: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=600&h=600&fit=crop",
+        sellerName: "Fatou Bintou",
+        sellerAvatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop",
+        sellerVerified: true,
+        sellerPlan: "Standard",
+        description: "PC ultra-puissant pour graphistes, architectes ou développeurs. Écran 4K tactile, batterie en parfait état, vendu avec chargeur d'origine."
+      }
+    ];
+
+    // Current temporary photo upload url for selling
+    let uploadedProductPhotoUrl = "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&h=600&fit=crop";
+
+    // Initialize application on load
+    window.addEventListener('DOMContentLoaded', () => {
+      renderProducts();
+    });
+
+    // Switch between Mobile simulation and Desktop view
+    function setViewMode(mode) {
+      currentViewMode = mode;
+      const appContainer = document.getElementById('appContainer');
+      const viewMobileBtn = document.getElementById('viewMobileBtn');
+      const viewWebBtn = document.getElementById('viewWebBtn');
+      const mobileStatusBar = document.getElementById('mobileStatusBar');
+
+      if (mode === 'mobile') {
+        appContainer.className = "phone-container transition-all duration-300";
+        viewMobileBtn.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-600 text-white shadow-sm transition";
+        viewWebBtn.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition";
+        mobileStatusBar.style.display = "flex";
+      } else {
+        appContainer.className = "desktop-container transition-all duration-300";
+        viewWebBtn.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-600 text-white shadow-sm transition";
+        viewMobileBtn.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition";
+        mobileStatusBar.style.display = "none";
+      }
+    }
+
+    // Switch main tabs: Achats, Vendre, Messages, Compte
+    function switchTab(tab) {
+      currentTab = tab;
+      
+      const sections = {
+        achats: document.getElementById('sectionAchats'),
+        vendre: document.getElementById('sectionVendre'),
+        messages: document.getElementById('sectionMessages'),
+        compte: document.getElementById('sectionCompte')
+      };
+
+      const tabButtons = {
+        achats: document.getElementById('tabBtnAchats'),
+        vendre: document.getElementById('tabBtnVendre'),
+        messages: document.getElementById('tabBtnMessages'),
+        compte: document.getElementById('tabBtnCompte')
+      };
+
+      const navIcons = {
+        achats: document.getElementById('navIconAchats'),
+        vendre: document.getElementById('navIconVendre'),
+        messages: document.getElementById('navIconMessages'),
+        compte: document.getElementById('navIconCompte')
+      };
+
+      // Hide all sections & reset styles
+      for (let key in sections) {
+        if (sections[key]) sections[key].classList.add('hidden');
+        if (tabButtons[key]) {
+          tabButtons[key].className = "py-2.5 flex flex-col items-center gap-0.5 border-b-2 border-transparent text-red-100 hover:text-white transition";
+        }
+        if (navIcons[key]) {
+          navIcons[key].className = "flex flex-col items-center hover:text-red-600";
+        }
+      }
+
+      // Show selected section & activate buttons
+      if (sections[tab]) sections[tab].classList.remove('hidden');
+      if (tabButtons[tab]) {
+        tabButtons[tab].className = "py-2.5 flex flex-col items-center gap-0.5 border-b-2 border-white text-white bg-red-700/40 transition";
+      }
+      if (navIcons[tab]) {
+        navIcons[tab].className = "flex flex-col items-center text-red-600";
+      }
+
+      // Reset unread count if messages tab opened
+      if (tab === 'messages') {
+        const unread = document.getElementById('unreadBadge');
+        if (unread) unread.style.display = 'none';
+      }
+    }
+
+    // Render products in the ACHATS tab
+    function renderProducts() {
+      const grid = document.getElementById('productsGrid');
+      grid.innerHTML = '';
+
+      const query = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+      const cityFilter = document.getElementById('cityFilter')?.value || '';
+
+      // Sorting logic: PREMIUM sellers always appear at the top (1er plan)
+      let filtered = products.filter(p => {
+        const matchesCondition = (currentFilter === 'all') || (p.condition === currentFilter);
+        const matchesCity = !cityFilter || p.city === cityFilter;
+        const matchesQuery = !query || p.title.toLowerCase().includes(query) || p.description.toLowerCase().includes(query) || p.district.toLowerCase().includes(query);
+        return matchesCondition && matchesCity && matchesQuery;
+      });
+
+      // Sort: Premium sellers first
+      filtered.sort((a, b) => {
+        if (a.sellerPlan === 'Premium' && b.sellerPlan !== 'Premium') return -1;
+        if (b.sellerPlan === 'Premium' && a.sellerPlan !== 'Premium') return 1;
+        return 0;
+      });
+
+      document.getElementById('productCountBadge').textContent = `${filtered.length} article${filtered.length > 1 ? 's' : ''}`;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-2 text-center py-10 bg-white rounded-2xl border border-slate-200 p-6">
+            <div class="text-4xl mb-2">🔍</div>
+            <div class="font-bold text-slate-700 text-sm">Aucun produit ne correspond à vos critères</div>
+            <p class="text-xs text-slate-400 mt-1">Essayez de modifier votre recherche ou vos filtres.</p>
+            <button onclick="resetFilters()" class="mt-3 px-3 py-1.5 bg-red-600 text-white rounded-xl text-xs font-bold">Réinitialiser les filtres</button>
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(p => {
+        const card = document.createElement('div');
+        card.className = "bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-md transition flex flex-col cursor-pointer group";
+        card.onclick = () => openProductModal(p);
+
+        const isPremium = p.sellerPlan === 'Premium';
+        const isNeuf = p.condition === 'Neuf';
+
+        card.innerHTML = `
+          <!-- Product Photo with Badges -->
+          <div class="relative bg-slate-100 aspect-square overflow-hidden">
+            <img src="${p.photo}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+            
+            <!-- Mandatory Condition Badge: NEUF ou OCCASION -->
+            <span class="absolute top-2 left-2 px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider shadow ${isNeuf ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-white'}">
+              ${isNeuf ? '✨ Neuf' : '🔄 Occasion'}
+            </span>
+
+            <!-- Premium Badge if applicable -->
+            ${isPremium ? `
+              <span class="absolute top-2 right-2 px-1.5 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider bg-amber-500 text-white shadow flex items-center gap-0.5">
+                ⭐ 1er Plan
+              </span>
+            ` : ''}
+
+            <!-- Stock / Quantity Available Badge -->
+            <span class="absolute bottom-2 left-2 px-2 py-0.5 rounded-md text-[10px] font-bold bg-white/95 text-slate-800 backdrop-blur-xs shadow-xs">
+              Stock : ${p.stock}
+            </span>
+          </div>
+
+          <!-- Product Details -->
+          <div class="p-2.5 sm:p-3 flex-1 flex flex-col justify-between space-y-1.5">
+            <div>
+              <div class="flex items-center gap-1 text-[10px] text-slate-500 font-medium truncate">
+                <span>📍</span>
+                <span>${p.city}, ${p.district}</span>
+              </div>
+              <h3 class="font-bold text-xs sm:text-sm text-slate-900 line-clamp-2 mt-0.5 group-hover:text-red-600 transition">
+                ${p.title}
+              </h3>
+            </div>
+
+            <!-- Price & Seller tag -->
+            <div class="pt-1 border-t border-slate-100 flex items-center justify-between">
+              <div>
+                <div class="text-xs sm:text-sm font-black text-red-600">
+                  ${p.price.toLocaleString('fr-FR')} FCFA
+                </div>
+              </div>
+              <button onclick="event.stopPropagation(); startDirectChatFromCard(${p.id})" class="p-1.5 bg-red-50 hover:bg-red-600 text-red-600 hover:text-white rounded-lg transition" title="Contacter le vendeur">
+                💬
+              </button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // Set filter for condition (All, Neuf, Occasion)
+    function setFilter(type) {
+      currentFilter = type;
+      
+      const btnAll = document.getElementById('filterAll');
+      const btnNeuf = document.getElementById('filterNeuf');
+      const btnOccasion = document.getElementById('filterOccasion');
+
+      [btnAll, btnNeuf, btnOccasion].forEach(btn => {
+        btn.className = "filter-chip px-3 py-1.5 rounded-full bg-slate-100 text-slate-700 font-medium whitespace-nowrap hover:bg-slate-200";
+      });
+
+      if (type === 'all') {
+        btnAll.className = "filter-chip px-3 py-1.5 rounded-full bg-red-600 text-white font-medium whitespace-nowrap shadow-sm";
+      } else if (type === 'Neuf') {
+        btnNeuf.className = "filter-chip px-3 py-1.5 rounded-full bg-emerald-600 text-white font-medium whitespace-nowrap shadow-sm";
+      } else if (type === 'Occasion') {
+        btnOccasion.className = "filter-chip px-3 py-1.5 rounded-full bg-slate-800 text-white font-medium whitespace-nowrap shadow-sm";
+      }
+
+      renderProducts();
+    }
+
+    function filterProducts() {
+      renderProducts();
+    }
+
+    function resetFilters() {
+      if (document.getElementById('searchInput')) document.getElementById('searchInput').value = '';
+      if (document.getElementById('cityFilter')) document.getElementById('cityFilter').value = '';
+      setFilter('all');
+    }
+
+    // Modal Product Details
+    function openProductModal(product) {
+      selectedProductForAction = product;
+      
+      document.getElementById('modalProductImg').src = product.photo;
+      document.getElementById('modalProductTitle').textContent = product.title;
+      document.getElementById('modalProductPrice').textContent = `${product.price.toLocaleString('fr-FR')} FCFA`;
+      document.getElementById('modalProductLocation').textContent = `${product.city}, ${product.district}`;
+      document.getElementById('modalProductDesc').textContent = product.description;
+      
+      const condBadge = document.getElementById('modalProductCondition');
+      condBadge.textContent = product.condition.toUpperCase();
+      condBadge.className = `px-2.5 py-1 rounded-full text-xs font-black shadow-md ${product.condition === 'Neuf' ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-white'}`;
+
+      document.getElementById('modalProductStock').textContent = `Stock disponible : ${product.stock}`;
+      
+      document.getElementById('modalSellerName').textContent = product.sellerName;
+      document.getElementById('modalSellerImg').src = product.sellerAvatar;
+
+      const premiumTag = document.getElementById('modalPremiumTag');
+      if (product.sellerPlan === 'Premium') {
+        premiumTag.style.display = 'block';
+      } else {
+        premiumTag.style.display = 'none';
+      }
+
+      document.getElementById('productDetailModal').classList.remove('hidden');
+    }
+
+    function closeProductModal() {
+      document.getElementById('productDetailModal').classList.add('hidden');
+    }
+
+    // Direct Chat initialization from Product Detail Modal
+    function contactSellerFromModal() {
+      closeProductModal();
+      openChatWithProduct(selectedProductForAction);
+    }
+
+    function startDirectChatFromCard(productId) {
+      const product = products.find(p => p.id === productId);
+      if (product) {
+        openChatWithProduct(product);
+      }
+    }
+
+    // Open Chat and prepare direct conversation
+    function openChatWithProduct(product) {
+      selectedProductForAction = product;
+      
+      // Update Chat info
+      document.getElementById('chatSellerName').textContent = product.sellerName;
+      document.getElementById('chatSellerAvatar').src = product.sellerAvatar;
+      document.getElementById('chatProductReference').textContent = `${product.title} • ${product.price.toLocaleString('fr-FR')} FCFA`;
+      document.getElementById('chatMiniTitle').textContent = product.title;
+      document.getElementById('chatMiniPrice').textContent = `${product.price.toLocaleString('fr-FR')} FCFA`;
+
+      // Set first message
+      document.getElementById('chatFirstClientMsg').textContent = `Bonjour ${product.sellerName} ! Je suis très intéressé par votre ${product.title} (${product.condition}) à ${product.price.toLocaleString('fr-FR')} FCFA. Est-il toujours disponible à ${product.city} ?`;
+
+      switchTab('messages');
+      showToast("💬 Discussion ouverte avec le vendeur !");
+    }
+
+    // Send chat message in live chat
+    function handleSendChatMessage(e) {
+      e.preventDefault();
+      const input = document.getElementById('chatInputMessage');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const chatBox = document.getElementById('chatMessagesBox');
+
+      // Append Client Message
+      const clientMsgDiv = document.createElement('div');
+      clientMsgDiv.className = "flex justify-end";
+      clientMsgDiv.innerHTML = `
+        <div class="bg-red-600 text-white rounded-2xl rounded-tr-none px-3 py-2 max-w-[80%] shadow-sm">
+          <p>${escapeHtml(text)}</p>
+          <div class="text-[9px] text-red-200 text-right mt-1">À l'instant • Envoyé</div>
+        </div>
+      `;
+      chatBox.appendChild(clientMsgDiv);
+      input.value = '';
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      // Simulate seller instant reply
+      setTimeout(() => {
+        const sellerMsgDiv = document.createElement('div');
+        sellerMsgDiv.className = "flex justify-start";
+        sellerMsgDiv.innerHTML = `
+          <div class="bg-slate-100 text-slate-800 rounded-2xl rounded-tl-none px-3 py-2 max-w-[80%] shadow-sm border border-slate-200">
+            <p>Parfait ! Le prix est validé. Vous pouvez cliquer sur le bouton <strong>Payer</strong> ci-dessus pour régler via Wave ou Orange Money, et je prépare immédiatement la livraison.</p>
+            <div class="text-[9px] text-slate-400 text-left mt-1">À l'instant • Vendeur</div>
+          </div>
+        `;
+        chatBox.appendChild(sellerMsgDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }, 1000);
+    }
+
+    // Payment flow
+    function openPaymentFromModal() {
+      closeProductModal();
+      launchPaymentModal(selectedProductForAction.title, selectedProductForAction.price);
+    }
+
+    function openPaymentFromCurrentChat() {
+      if (selectedProductForAction) {
+        launchPaymentModal(selectedProductForAction.title, selectedProductForAction.price);
+      } else {
+        launchPaymentModal(products[0].title, products[0].price);
+      }
+    }
+
+    function launchPaymentModal(itemTitle, itemPrice) {
+      document.getElementById('payItemTitle').textContent = itemTitle;
+      document.getElementById('payItemPrice').textContent = `${itemPrice.toLocaleString('fr-FR')} FCFA`;
+      document.getElementById('payTotalAmount').textContent = `${itemPrice.toLocaleString('fr-FR')} FCFA`;
+      
+      updatePaymentFormUI();
+      document.getElementById('paymentModal').classList.remove('hidden');
+    }
+
+    function closePaymentModal() {
+      document.getElementById('paymentModal').classList.add('hidden');
+    }
+
+    function updatePaymentFormUI() {
+      const selected = document.querySelector('input[name="payMethod"]:checked').value;
+      const mobileBox = document.getElementById('mobileMoneyInputs');
+      const cardBox = document.getElementById('cardInputs');
+      const phoneLabel = document.getElementById('phoneInputLabel');
+      const hint = document.getElementById('paymentHint');
+
+      if (selected === 'Wave') {
+        mobileBox.classList.remove('hidden');
+        cardBox.classList.add('hidden');
+        phoneLabel.textContent = "Numéro Wave (+221) :";
+        hint.textContent = "Vous recevrez une notification push instantanée sur votre application Wave pour valider le code.";
+      } else if (selected === 'OrangeMoney') {
+        mobileBox.classList.remove('hidden');
+        cardBox.classList.add('hidden');
+        phoneLabel.textContent = "Numéro Orange Money (+221) :";
+        hint.textContent = "Composez #144# ou confirmez la notification Orange Money sur votre téléphone.";
+      } else {
+        mobileBox.classList.add('hidden');
+        cardBox.classList.remove('hidden');
+      }
+    }
+
+    function executePayment() {
+      const method = document.querySelector('input[name="payMethod"]:checked').value;
+      closePaymentModal();
+      showToast(`🎉 Paiement de ${document.getElementById('payTotalAmount').textContent} validé avec succès via ${method} !`);
+    }
+
+    // Seller Subscription & Listing Flow
+    function toggleSubscriptionModal() {
+      const modal = document.getElementById('subscriptionModal');
+      modal.classList.toggle('hidden');
+    }
+
+    function subscribePlan(plan, price) {
+      processSubscription(plan, price, 'mensuel');
+    }
+
+    function processSubscription(plan, price, period) {
+      userSubscription = plan;
+      userSubscriptionDuration = period;
+      
+      document.getElementById('currentPlanLabel').innerHTML = `
+        <span class="${plan === 'Premium' ? 'text-amber-600' : 'text-emerald-600'} font-black">
+          ${plan === 'Premium' ? '⭐ Pack Vendeur Premium' : '✅ Pack Vendeur Standard'} (${price.toLocaleString('fr-FR')} F/${period === 'mensuel' ? 'mois' : 'an'})
+        </span>
+      `;
+
+      document.getElementById('accountBadgeSub').textContent = `Vendeur ${plan} (${price.toLocaleString('fr-FR')} F)`;
+      document.getElementById('accountBadgeSub').className = plan === 'Premium' ? "text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-200 text-amber-900" : "text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800";
+
+      document.getElementById('subscriptionModal').classList.add('hidden');
+      showToast(`👑 Félicitations ! Votre abonnement Vendeur ${plan} est activé.`);
+    }
+
+    // Photo selection helpers
+    function triggerPhotoPick() {
+      document.getElementById('productPhotoInput').click();
+    }
+
+    function handlePhotoUpload(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          uploadedProductPhotoUrl = evt.target.result;
+          displayUploadedPhoto(uploadedProductPhotoUrl);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function selectSamplePhoto(type) {
+      if (type === 'iphone') {
+        uploadedProductPhotoUrl = "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=600&h=600&fit=crop";
+        document.getElementById('sellTitle').value = "iPhone 14 Pro 128Go Graphite";
+        document.getElementById('sellPrice').value = "450000";
+      } else if (type === 'scooter') {
+        uploadedProductPhotoUrl = "https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=600&h=600&fit=crop";
+        document.getElementById('sellTitle').value = "Scooter Honda PCX 125";
+        document.getElementById('sellPrice').value = "850000";
+      } else if (type === 'bazin') {
+        uploadedProductPhotoUrl = "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&h=600&fit=crop";
+        document.getElementById('sellTitle').value = "Grand Boubou Bazin Riche Bleu Roi";
+        document.getElementById('sellPrice').value = "55000";
+      }
+      displayUploadedPhoto(uploadedProductPhotoUrl);
+    }
+
+    function displayUploadedPhoto(url) {
+      document.getElementById('photoPreviewContainer').classList.remove('hidden');
+      document.getElementById('photoPlaceholder').classList.add('hidden');
+      document.getElementById('photoPreviewImg').src = url;
+    }
+
+    // ID CNI / Passport upload
+    function triggerIdPick() {
+      document.getElementById('idDocInput').click();
+    }
+
+    function handleIdUpload(e) {
+      const file = e.target.files[0];
+      if (file) {
+        document.getElementById('idUploadLabel').textContent = `✅ ${file.name}`;
+        document.getElementById('idBadgeSuccess').classList.remove('hidden');
+      }
+    }
+
+    // Submit new Product Listing
+    function handleProductSubmission(e) {
+      e.preventDefault();
+
+      // Check mandatory subscription
+      if (!userSubscription) {
+        alert("Attention : Pour publier un produit sur SAMA MARCHÉ, vous devez d'abord choisir un abonnement Vendeur (1 500 FCFA Standard ou 3 000 FCFA Premium).");
+        toggleSubscriptionModal();
+        return;
+      }
+
+      // Check mandatory photo
+      if (!uploadedProductPhotoUrl) {
+        alert("La photo du produit est obligatoire !");
+        return;
+      }
+
+      // Check mandatory ID
+      const idBadge = document.getElementById('idBadgeSuccess');
+      if (idBadge.classList.contains('hidden')) {
+        // Auto validate for demo ease if user didn't click
+        idBadge.classList.remove('hidden');
+      }
+
+      const title = document.getElementById('sellTitle').value.trim();
+      const price = parseInt(document.getElementById('sellPrice').value);
+      const stock = parseInt(document.getElementById('sellStock').value);
+      const condition = document.querySelector('input[name="sellCondition"]:checked').value;
+      const city = document.getElementById('sellCity').value;
+      const district = document.getElementById('sellDistrict').value.trim();
+      const desc = document.getElementById('sellDescription').value.trim() || "Produit garanti en excellent état.";
+
+      const newProduct = {
+        id: Date.now(),
+        title: title,
+        price: price,
+        stock: stock,
+        condition: condition, // Neuf ou Occasion
+        city: city,
+        district: district,
+        photo: uploadedProductPhotoUrl,
+        sellerName: "Moussa Diop",
+        sellerAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
+        sellerVerified: true,
+        sellerPlan: userSubscription, // Standard or Premium
+        description: desc
+      };
+
+      // Add product to top
+      products.unshift(newProduct);
+
+      // Reset form
+      e.target.reset();
+      document.getElementById('photoPreviewContainer').classList.add('hidden');
+      document.getElementById('photoPlaceholder').classList.remove('hidden');
+
+      // Switch to Achats tab to show new product immediately
+      switchTab('achats');
+      renderProducts();
+
+      showToast(`🎉 Votre produit "${title}" est maintenant en ligne sur SAMA MARCHÉ !`);
+    }
+
+    // Auth modal
+    function openAuthModal() {
+      document.getElementById('authModal').classList.remove('hidden');
+    }
+
+    function closeAuthModal() {
+      document.getElementById('authModal').classList.add('hidden');
+    }
+
+    function saveAuthUser() {
+      const name = document.getElementById('authNameInput').value;
+      document.getElementById('userHeaderName').textContent = `${name.split(' ')[0]} (Connecté)`;
+      closeAuthModal();
+      showToast(`Bienvenue ${name} !`);
+    }
+
+    // Helper: Toast
+    function showToast(msg) {
+      const toast = document.getElementById('toastNotification');
+      const toastMsg = document.getElementById('toastMessage');
+      toastMsg.textContent = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 3500);
+    }
+
+    function escapeHtml(string) {
+      return String(string).replace(/[&<>"'`=\/]/g, function (s) {
+        return {
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;',
+          '/': '&#x2F;',
+          '`': '&#x60;',
+          '=': '&#x3D;'
+        }[s];
+      });
+    }
+  </script>
+</body>
+</html>
